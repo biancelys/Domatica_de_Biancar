@@ -32,7 +32,7 @@ Imagen de la maqueta a presentar:
 Mapa conceptual del proceso a realizar:
 ![231399176-264dbbc5-c4dd-4e64-9cf1-fbd195f1c4ed](https://user-images.githubusercontent.com/129267075/233951381-2a1c467e-4c12-491b-b8e0-ccb0ca1052f2.png)
 
-Mapa del flujo de trabajo:
+Fotogradia del flujo de trabajo:
 ![232455553-6cd36f70-fa45-4eff-a54e-6ccfcdd84681](https://user-images.githubusercontent.com/129267075/233951861-bc7e0b27-21d0-4e52-a4e6-ebcff3281b6f.png)
 
 
