@@ -1,0 +1,17 @@
+alias: Apagado luz 
+description: ""
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.esp32domotica_sensorluz
+    above: 0.7
+condition: []
+action:
+  - service: light.turn_off
+    data: {}
+    target:
+      area_id: taller
+      device_id: 7f0ca7beda7ec476085080e7c3ab07d1
+      entity_id:
+        - light.esp32domotica_luz
+        - light.esp32domotica_neopixel_light
+mode: single
