@@ -1,0 +1,16 @@
+alias: Acender Ventilador a 24ªC
+description: ""
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.esp32domotica_temperatura
+    above: 24
+condition: []
+action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      area_id: taller
+      device_id: 7f0ca7beda7ec476085080e7c3ab07d1
+      entity_id:
+        - switch.esp32domotica_rele_2
+mode: single
