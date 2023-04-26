@@ -1,4 +1,4 @@
-# Domatica_de_Biancar
+# Domótica_de_Biancar
 Lista de materiales necesarios:
 
 ESP32 Wroom
