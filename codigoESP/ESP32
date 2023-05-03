@@ -1,0 +1,86 @@
+esphome:
+  name: esp32-iot1
+  friendly_name: ESP32_iot1
+
+esp32:
+  board: nodemcu-32s
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "UtNuNFtqB5bg7IHj4cAYAfDMI/Y95L0e922d27vwbgQ="
+
+ota:
+  password: "db62883480c8e473625c712638beac46"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32-Iot1 Fallback Hotspot"
+    password: "DSvcCNw8PAyA"
+
+captive_portal:
+
+sensor:
+  - platform: dht
+    model: DHT11
+    pin: GPIO16
+    temperature:
+     name: "Temperatura"
+     id: "temp"
+    humidity:
+     name: "Humedad"
+     id: "hum"
+    update_interval: 5s
+
+  - platform: ultrasonic
+    trigger_pin: GPIO5
+    echo_pin: GPIO23
+    name: "Ultrasonic Sensor"
+    id: "dist"
+    update_interval: 1s
+
+switch:
+    platform: gpio
+    name: "RelÉ"
+    pin: GPIO26
+
+light:
+    platform: binary
+    name: "Luz"
+    output: light_output
+
+output:
+    id: light_output
+    platform: gpio
+    pin: GPIO17
+
+
+binary_sensor:
+    platform: gpio
+    pin: GPIO18
+    name: "botón_biancar"
+    device_class: window
+    
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+
+display:
+  platform: lcd_pcf8574
+  dimensions: 16x2
+  address: 0x27
+  lambda: |-
+    it.printf(2, 0, "%.1f", id(temp).state);
+    it.printf(2, 1, "%.1f", id(hum).state);
+    it.print(0, 0, "T=");
+    it.print(0, 1, "H=");
+    
