@@ -1,0 +1,165 @@
+esphome:
+  name: esp32domotica
+  friendly_name: ESP32Domotica
+
+esp32:
+  board: nodemcu-32s
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "your_key"
+
+ota:
+  password: "your_password"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32Domotica Fallback Hotspot"
+    password: "your_password"
+
+captive_portal:
+
+#sensor binario. Sensor PIR e botón 
+#Botón
+binary_sensor:
+  - platform: gpio
+    pin: GPIO5
+    name: "botón"
+    device_class: power   
+#PIR  
+  - platform: gpio
+    pin: GPIO26
+    name: "Sensor_PIR" 
+    device_class: motion
+    
+#Sensor de Tª e Hª DHT-11
+sensor:
+  - platform: dht
+    model: DHT11
+    pin: GPIO16
+    temperature:
+      name: "Temperatura"
+      id: "temp"
+    humidity:
+      name: "Humedad"
+      id: "hum"
+    update_interval: 10s
+     
+#Sensor LDR
+  - platform: adc
+    pin: GPIO34
+    id: 'LDR_1'
+    name: "SensorLuz"
+    update_interval: 10s
+    filters:
+      - multiply: 1.6
+
+
+light:
+#LED Neopixel. Non fai falta repetir a liña de light. Os efectos poden ser máis
+  - platform: neopixelbus
+    type: RGB
+    variant: WS2811
+    pin: GPIO23
+    num_leds: 2
+    name: "NeoPixel Light"    
+    id: "ledrgb"
+    effects:
+      # Use default parameters:
+      - random:
+      # Customize parameters
+      - random:
+          name: "My Slow Random Effect"
+          transition_length: 30s
+          update_interval: 30s
+      - random:
+          name: "My Fast Random Effect"
+          transition_length: 4s
+          update_interval: 5s
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+      - pulse:
+          name: "Slow Pulse"
+          # transition_length: 1s      # defaults to 1s
+          update_interval: 2s
+   
+   #Luz binaria. Un LED que acende e apaga    
+  - platform: binary
+    name: "Luz"
+    output: light_output
+ 
+output:  
+ - platform: gpio
+   pin: GPIO17
+   id: light_output
+
+#Zumbador activo que acendemos e apagamos
+ - platform: gpio
+   pin: GPIO2
+   id: buzzer_output
+
+#Iniciamos o PWM para o pin do servo
+ - platform: ledc      
+   pin: GPIO19
+   id: pwm_output
+   frequency: 50 Hz
+
+ 
+
+       #Interruptor: relé   
+switch:
+    platform: gpio
+    name: "Rele"
+    pin: GPIO25  
+
+#Servo. creamos number para manexalo 
+number:
+  - platform: template
+    name: Servo Control
+    min_value: -100
+    max_value: 100
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: my_servo
+            level: !lambda 'return x / 100.0;'
+
+servo:
+   - id: my_servo
+     output: pwm_output
+
+
+ 
+
+#LCD16x2
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+
+display:
+  - platform: lcd_pcf8574
+    dimensions: 16x2
+    address: 0x27
+    lambda: |-
+      it.printf(2, 1, "%.1f", id(temp).state);
+      it.printf(10, 1, "%.0f", id(hum).state);
+      it.print(0, 1, "T=");
+      it.print(6, 1, "C");
+      it.print(12, 1, "%");
+      it.print(8, 1, "H=");
+      it.print(3, 0, "IES de Teis");
+      
